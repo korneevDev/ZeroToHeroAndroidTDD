@@ -1,30 +1,40 @@
 package ru.easycode.zerotoheroandroidtdd
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import ru.easycode.zerotoheroandroidtdd.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    private var count = "0"
+    private var uiState: UiState = UiState.Init
+    private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val counter = Count.Base(2)
+        val counter = Count.Base(2, 4)
 
-        findViewById<Button>(R.id.incrementButton).setOnClickListener{
-            findViewById<TextView>(R.id.countTextView).text = counter.increment(count).also { count = it }
+        binding.incrementButton.setOnClickListener{
+            uiState = uiState.increment(counter)
+            uiState.show(binding)
         }
     }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("counter", count)
+        uiState.saveState(outState, "counter", "isEnabled")
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        count = savedInstanceState.getString("counter") ?: "0"
-        findViewById<TextView>(R.id.countTextView).text = count
+        val text = savedInstanceState.getString("counter") ?: "0"
+        val isMax = savedInstanceState.getBoolean("isEnabled")
+
+        if(isMax){
+            uiState = UiState.Max(text)
+            uiState.show(binding)
+        } else{
+            uiState = UiState.Base(text)
+            uiState.show(binding)
+        }
     }
 }
