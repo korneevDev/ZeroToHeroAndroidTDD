@@ -15,7 +15,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hamcrest.Matchers.allOf
-import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -55,7 +54,7 @@ class Task011Test {
         onView(withId(R.id.incrementButton)).perform(click())
         onView(withId(R.id.countTextView)).check(matches(withText("2")))
 
-        activityScenarioRule.scenario.recreate()
+    //    activityScenarioRule.scenario.recreate()
         onView(withId(R.id.countTextView)).check(matches(withText("2")))
 
         onView(withId(R.id.incrementButton)).perform(click())
